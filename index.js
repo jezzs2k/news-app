@@ -2,13 +2,17 @@
  * @format
  */
 
-import {Navigation} from 'react-native-navigation';
-import {AppRegistry} from 'react-native';
+//LIBS
+import { Navigation } from 'react-native-navigation';
+import { AppRegistry } from 'react-native';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+
+//APP
 import App from './App';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
 
 //SCREENS
-import {CallScreen, HomeScreen} from './src/screens';
+import { CallScreen, HomeScreen } from './src/screens';
 
 AppRegistry.registerComponent(appName, () => App);
 
@@ -36,6 +40,15 @@ Navigation.events().registerAppLaunchedListener(() => {
                 bottomTab: {
                   icon: require('./home.png'),
                 },
+                topBar: {
+                  title: {
+                    text: 'News',
+                    fontSize: wp(4.5),
+                    fontWeight: '700',
+                    alignment: 'center'
+                  },
+                  noBorder: true,
+                }
               },
             },
           },
@@ -54,6 +67,20 @@ Navigation.events().registerAppLaunchedListener(() => {
                 bottomTab: {
                   icon: require('./call.png'),
                 },
+                options: {
+                  bottomTab: {
+                    icon: require('./home.png'),
+                  },
+                },
+                topBar: {
+                  title: {
+                    text: 'Settings',
+                    fontSize: wp(4.5),
+                    fontWeight: '700',
+                    alignment: 'center'
+                  },
+                  noBorder: true,
+                }
               },
             },
           },
