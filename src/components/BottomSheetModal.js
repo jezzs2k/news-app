@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: heightPercentageToDP(50),
         maxHeight: heightPercentageToDP(60),
+        borderRadius: 8,
     },
     content: {
         marginTop: heightPercentageToDP(1),

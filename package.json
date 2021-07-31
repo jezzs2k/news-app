@@ -17,8 +17,9 @@
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-navigation": "7.18.1",
-    "react-native-raw-bottom-sheet": "^2.2.0",
+    "react-native-raw-bottom-sheet": "2.2.0",
     "react-native-responsive-screen": "1.4.2",
+    "react-native-splash-screen": "3.2.0",
     "react-native-svg": "12.1.1",
     "react-native-vector-icons": "8.1.0",
     "react-native-webview": "11.6.5"
