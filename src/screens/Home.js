@@ -60,7 +60,7 @@ export const HomeScreen = props => {
     page++;
   };
 
-  const handleOpenDetail = () => Navigation.push(props.componentId, {
+  const handleOpenDetail = (item) => Navigation.push(props.componentId, {
     component: {
       name: 'WebView',
       options: {
@@ -92,7 +92,7 @@ export const HomeScreen = props => {
   );
 
   const renderItemFooter = (footerProps, item) => (
-    <TouchableOpacity style={styles.footerContainer} onPress={handleOpenDetail}>
+    <TouchableOpacity style={styles.footerContainer} onPress={() => handleOpenDetail(item)}>
       <Text {...footerProps} style={styles.textFooter}>
         Details
       </Text>

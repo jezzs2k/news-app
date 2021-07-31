@@ -6,6 +6,7 @@
 import { Navigation } from 'react-native-navigation';
 import { AppRegistry } from 'react-native';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Feather from 'react-native-vector-icons/Feather';
 
 //APP
 import App from './App';
@@ -40,7 +41,7 @@ Navigation.events().registerAppLaunchedListener(() => {
               ],
               options: {
                 bottomTab: {
-                  icon: require('./home.png'),
+                  icon: Feather.getImageSourceSync('home', 30, '#000'),
                 },
                 topBar: {
                   title: {
@@ -67,12 +68,7 @@ Navigation.events().registerAppLaunchedListener(() => {
               ],
               options: {
                 bottomTab: {
-                  icon: require('./call.png'),
-                },
-                options: {
-                  bottomTab: {
-                    icon: require('./home.png'),
-                  },
+                  icon: Feather.getImageSourceSync('settings', 30, '#000'),
                 },
                 topBar: {
                   title: {
