@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text, Card, List } from '@ui-kitten/components';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -12,16 +12,30 @@ import { BottomSheetModal } from '../components';
 //CALL_API
 import { getNews } from '../stores/news';
 
+let page = 2;
+
 export const HomeScreen = props => {
   const [news, setNews] = useState([]);
   const [itemSheet, setItemSheet] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const refRBSheet = useRef();
 
   const crawlData = async () => {
+    setLoading(true);
     const data = await getNews();
 
     setNews(data);
+    setLoading(false);
+  };
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    const data = await getNews();
+
+    setNews(data);
+    setLoading(false);
   };
 
   const handleOpenSheet = (item) => {
@@ -29,6 +43,20 @@ export const HomeScreen = props => {
     setTimeout(() => {
       refRBSheet.current.open();
     }, 0);
+  };
+
+  const handleLoadMore = async () => {
+    if (loadingMore) {
+      return;
+    };
+    setLoadingMore(true);
+
+    const data = await getNews(page);
+
+    setNews((news) => ([...news, ...data]));
+
+    setLoadingMore(false);
+    page++;
   };
 
 
@@ -88,6 +116,21 @@ export const HomeScreen = props => {
           data={news}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={handleRefresh}
+            />
+          }
+          onEndReachedThreshold={0.5}
+          onEndReached={handleLoadMore}
+          windowSize={news?.length / 2 || 10}
+          maxToRenderPerBatch={19}
+          updateCellsBatchingPeriod={20}
+          initialNumToRender={10}
+          onEndReachedThreshold={0.5}
+          pageSize={news.length / 2}
+          ListFooterComponent={loadingMore ? <ActivityIndicator color={'#000'} size={'small'} /> : null}
         />
       </Layout>
     </ApplicationProvider>
