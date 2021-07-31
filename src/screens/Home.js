@@ -1,37 +1,36 @@
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text, Card, List } from '@ui-kitten/components';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet';
+import RBSheet from "react-native-raw-bottom-sheet";
 
+//COMPONENTS
+import { BottomSheetModal } from '../components';
+
+//CALL_API
 import { getNews } from '../stores/news';
 
 export const HomeScreen = props => {
   const [news, setNews] = useState([]);
+  const [itemSheet, setItemSheet] = useState(null);
 
-  const bottomSheetModalRef = useRef(null);
-
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
-
-  // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    console.log('sdsadasd')
-    bottomSheetModalRef.current?.present();
-  }, []);
-  const handleSheetChanges = useCallback((index) => {
-    console.log('handleSheetChanges', index);
-  }, []);
+  const refRBSheet = useRef();
 
   const crawlData = async () => {
     const data = await getNews();
 
     setNews(data);
   };
+
+  const handleOpenSheet = (item) => {
+    setItemSheet(item)
+    setTimeout(() => {
+      refRBSheet.current.open();
+    }, 0);
+  };
+
 
   useEffect(() => {
     crawlData();
@@ -60,13 +59,13 @@ export const HomeScreen = props => {
       status='basic'
       header={headerProps => renderItemHeader(headerProps, info)}
       footer={renderItemFooter}>
-      <TouchableOpacity style={styles.containerItem}>
+      <TouchableOpacity style={styles.containerItem} onPress={() => handleOpenSheet(info.item)}>
         <Image source={{ uri: info.item.image }} style={styles.image} />
         <View style={styles.content}>
           <Text style={styles.textContent} lineBreakMode="tail">
             {info.item.content}
           </Text>
-          <TouchableOpacity style={styles.moreBtn}>
+          <TouchableOpacity style={styles.moreBtn} onPress={() => handleOpenSheet(info.item)}>
             <Text style={styles.moreText}>More</Text>
             <AntDesign name='down' style={styles.iconFooter} size={wp(3.2)} />
           </TouchableOpacity>
@@ -77,25 +76,7 @@ export const HomeScreen = props => {
 
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
-      <BottomSheetModalProvider>
-        <View style={styles.containerSheet}>
-          <Button
-            onPress={handlePresentModalPress}
-            title="Present Modal"
-            color="black"
-          />
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={1}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
-          >
-            <View style={styles.contentContainer}>
-              <Text>Awesome 🎉</Text>
-            </View>
-          </BottomSheetModal>
-        </View>
-      </BottomSheetModalProvider>
+      <BottomSheetModal item={itemSheet} refRBSheet={refRBSheet} />
       <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <List
           style={styles.container}
