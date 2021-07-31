@@ -13,11 +13,13 @@ import { name as appName } from './app.json';
 
 //SCREENS
 import { CallScreen, HomeScreen } from './src/screens';
+import { MyWebComponent } from './src/components';
 
 AppRegistry.registerComponent(appName, () => App);
 
 Navigation.registerComponent('Home', () => HomeScreen);
 Navigation.registerComponent('Call', () => CallScreen);
+Navigation.registerComponent('WebView', () => MyWebComponent);
 
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setRoot({

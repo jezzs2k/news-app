@@ -4,7 +4,8 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text, Card, List } from '@ui-kitten/components';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import SplashScreen from 'react-native-splash-screen'
+import SplashScreen from 'react-native-splash-screen';
+import { Navigation } from 'react-native-navigation';
 
 //COMPONENTS
 import { BottomSheetModal } from '../components';
@@ -59,6 +60,20 @@ export const HomeScreen = props => {
     page++;
   };
 
+  const handleOpenDetail = () => Navigation.push(props.componentId, {
+    component: {
+      name: 'WebView',
+      options: {
+        topBar: {
+          title: {
+            text: item.title
+          }
+        }
+      },
+      passProps: { item }
+    }
+  })
+
 
   useEffect(() => {
     crawlData();
@@ -76,8 +91,8 @@ export const HomeScreen = props => {
     </View>
   );
 
-  const renderItemFooter = (footerProps) => (
-    <TouchableOpacity style={styles.footerContainer}>
+  const renderItemFooter = (footerProps, item) => (
+    <TouchableOpacity style={styles.footerContainer} onPress={handleOpenDetail}>
       <Text {...footerProps} style={styles.textFooter}>
         Details
       </Text>
@@ -90,7 +105,7 @@ export const HomeScreen = props => {
       style={styles.item}
       status='basic'
       header={headerProps => renderItemHeader(headerProps, info)}
-      footer={renderItemFooter}>
+      footer={(footerProps) => renderItemFooter(footerProps, info.item)}>
       <TouchableOpacity style={styles.containerItem} onPress={() => handleOpenSheet(info.item)}>
         <Image source={{ uri: info.item.image }} style={styles.image} />
         <View style={styles.content}>
@@ -108,7 +123,7 @@ export const HomeScreen = props => {
 
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
-      <BottomSheetModal item={itemSheet} refRBSheet={refRBSheet} />
+      <BottomSheetModal item={itemSheet} refRBSheet={refRBSheet} componentId={props.componentId} />
       <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <List
           style={styles.container}

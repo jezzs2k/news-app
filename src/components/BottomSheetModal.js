@@ -3,11 +3,25 @@ import { ScrollView, Text, View, TouchableOpacity, StyleSheet, Image } from "rea
 import RBSheet from "react-native-raw-bottom-sheet";
 import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Navigation } from 'react-native-navigation';
 
-export const BottomSheetModal = ({ item, refRBSheet }) => {
+export const BottomSheetModal = ({ item, refRBSheet, componentId }) => {
 
     const handleToDetail = () => {
-        console.log(item);
+        refRBSheet.current.close();
+        Navigation.push(componentId, {
+            component: {
+                name: 'WebView',
+                options: {
+                    topBar: {
+                        title: {
+                            text: item.title
+                        }
+                    }
+                },
+                passProps: { item }
+            }
+        })
     }
 
     return (
