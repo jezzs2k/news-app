@@ -4,7 +4,7 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text, Card, List } from '@ui-kitten/components';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import RBSheet from "react-native-raw-bottom-sheet";
+import SplashScreen from 'react-native-splash-screen'
 
 //COMPONENTS
 import { BottomSheetModal } from '../components';
@@ -35,6 +35,10 @@ export const HomeScreen = props => {
   useEffect(() => {
     crawlData();
   }, [])
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   const renderItemHeader = (headerProps, info) => (
     <View {...headerProps}>
