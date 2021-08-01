@@ -1,2 +1,2 @@
 export * from './Home';
-export * from './Call';
+export * from './Comment';

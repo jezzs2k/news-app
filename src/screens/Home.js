@@ -46,6 +46,26 @@ export const HomeScreen = props => {
     }, 0);
   };
 
+  const handleToComment = (item) => Navigation.push(props.componentId, {
+    component: {
+      name: 'Comments',
+      options: {
+        topBar: {
+          title: {
+            text: item.title,
+            style: {
+              paddingHorizontal: 8,
+              marginHorizontal: 8,
+            },
+            paddingHorizontal: 8,
+            marginHorizontal: 8,
+          },
+        }
+      },
+      passProps: { item }
+    }
+  })
+
   const handleLoadMore = async () => {
     if (loadingMore) {
       return;
@@ -92,12 +112,24 @@ export const HomeScreen = props => {
   );
 
   const renderItemFooter = (footerProps, item) => (
-    <TouchableOpacity style={styles.footerContainer} onPress={() => handleOpenDetail(item)}>
-      <Text {...footerProps} style={styles.textFooter}>
-        Details
-      </Text>
-      <AntDesign name='right' style={styles.iconFooter} size={wp(3.2)} />
-    </TouchableOpacity>
+    <View>
+      <View style={styles.date}>
+        <Text>{item.date}</Text>
+      </View>
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.footerContainer} onPress={() => handleOpenDetail(item)}>
+          <Text {...footerProps} style={styles.textFooter}>
+            Details
+          </Text>
+          <AntDesign name='right' style={styles.iconFooter} size={wp(3.2)} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.footerContainer} onPress={() => handleToComment(item)}>
+          <Text {...footerProps} style={styles.textFooter}>
+            Comments
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 
   const renderItem = (info) => (
@@ -214,5 +246,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: wp(3.2),
     paddingVertical: hp(1.3),
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+  },
+  date: {
+    paddingVertical: hp(1),
+    paddingLeft: wp(5.5),
   },
 });

@@ -13,13 +13,13 @@ import App from './App';
 import { name as appName } from './app.json';
 
 //SCREENS
-import { CallScreen, HomeScreen } from './src/screens';
+import { CommentScreen, HomeScreen } from './src/screens';
 import { MyWebComponent } from './src/components';
 
 AppRegistry.registerComponent(appName, () => App);
 
 Navigation.registerComponent('Home', () => HomeScreen);
-Navigation.registerComponent('Call', () => CallScreen);
+Navigation.registerComponent('Comments', () => CommentScreen);
 Navigation.registerComponent('WebView', () => MyWebComponent);
 
 Navigation.events().registerAppLaunchedListener(() => {
@@ -57,28 +57,28 @@ Navigation.events().registerAppLaunchedListener(() => {
           },
           {
             stack: {
-              id: 'PROFILE_TAB',
+              id: 'COMMENT_TAB',
               children: [
                 {
                   component: {
-                    id: 'Call',
-                    name: 'Call',
+                    id: 'Comments',
+                    name: 'Comments',
                   },
                 },
               ],
               options: {
                 bottomTab: {
-                  icon: Feather.getImageSourceSync('settings', 30, '#000'),
+                  icon: Feather.getImageSourceSync('message-circle', 30, '#000'),
                 },
-                topBar: {
-                  title: {
-                    text: 'Settings',
-                    fontSize: wp(4.5),
-                    fontWeight: '700',
-                    alignment: 'center'
-                  },
-                  noBorder: true,
-                }
+                // topBar: {
+                //   title: {
+                //     text: 'Loading...',
+                //     fontSize: wp(4.5),
+                //     fontWeight: '700',
+                //     alignment: 'center'
+                //   },
+                //   noBorder: true,
+                // }
               },
             },
           },
