@@ -12,6 +12,8 @@
   "dependencies": {
     "@eva-design/eva": "2.1.1",
     "@react-native-community/cli": "5.0.1",
+    "@react-native-firebase/app": "^12.4.0",
+    "@react-native-firebase/database": "^12.4.0",
     "@ui-kitten/components": "5.1.1",
     "axios": "0.21.1",
     "react": "17.0.1",
