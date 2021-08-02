@@ -33,7 +33,9 @@ const config = {
     name: 'NEWS_APP',
 };
 
-await firebase.initializeApp(credentials, config);
+if (!firebase.apps.length) {
+    firebase.initializeApp(credentials, config);
+};
 
 export { firebase }
 // await firebase.app('NEWS_APP').delete();

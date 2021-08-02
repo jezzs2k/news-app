@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
 import { Navigation } from 'react-native-navigation';
 import Feather from 'react-native-vector-icons/Feather';
+import firestore from '@react-native-firebase/firestore';
+import uuid from 'react-native-uuid';
 
+//QUERY
 import { getNews } from '../stores/news';
-import { Comments } from '../components/comment'
 
-export const CommentScreen = ({ item }) => {
+//COMP
+import { Comments } from '../components/comment';
+
+let oneTime = true;
+
+export const CommentScreen = ({ item, ...props }) => {
   const [newItem, setNewItem] = useState(item ?? {});
   const [loading, setLoading] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [loadingComment, setLoadingComment] = useState(false);
   const [text, setText] = useState('');
+
+  const commentRef = firestore().collection('comments');
+
+  const newId = newItem?.id;
 
   const crawlData = async () => {
     setLoading(true);
@@ -22,13 +35,64 @@ export const CommentScreen = ({ item }) => {
 
   const handleChangeText = (text) => {
     setText(text);
-  }
+  };
+
+  const handleAddComment = () => {
+    if (text && text.length > 0) {
+      const timestamp = firestore.FieldValue.serverTimestamp();
+      const data = {
+        text,
+        newId: newItem?.id,
+        createdAt: timestamp,
+        likes: [],
+        senderUser: null,
+        commentId: uuid.v4(),
+      };
+
+      setLoadingComment(true);
+      commentRef.add(data).then(_doc => {
+        setText('')
+        Keyboard.dismiss()
+        setLoadingComment(false);
+      }).catch((error) => {
+        setLoadingComment(false);
+        alert(error)
+      });;
+    }
+  };
 
   useEffect(() => {
-    if (!item) {
+    if (!item && oneTime) {
       crawlData();
-    }
+    };
+    oneTime = false;
   }, []);
+
+  useEffect(() => {
+    let screenEventListener;
+    let unsubscribe;
+
+    if (!screenEventListener) {
+      screenEventListener = Navigation.events().registerComponentDidAppearListener(({ componentId, componentName, passProps }) => {
+        if (componentId === props.componentId) {
+          if (newId) {
+            unsubscribe = commentRef.where('newId', '==', newId).onSnapshot(querySnapshot => {
+              const newsData = [];
+              querySnapshot?.forEach(doc => {
+                newsData.push(doc.data());
+              });
+
+              setComments(newsData);
+            })
+          }
+        }
+      });
+    }
+    return () => {
+      screenEventListener && screenEventListener.remove();
+      unsubscribe?.();
+    }
+  }, [])
 
   useEffect(() => {
     if (newItem) {
@@ -49,8 +113,8 @@ export const CommentScreen = ({ item }) => {
   const renderTextInput = () => {
     return <View style={styles.footerComp}>
       <TextInput value={text} multiline style={styles.textInput} placeholder={'Typing...'} onChangeText={handleChangeText} />
-      <TouchableOpacity style={styles.sendBtn}>
-        <Feather name={'send'} style={styles.iconSend} size={widthPercentageToDP(5)} />
+      <TouchableOpacity style={styles.sendBtn} onPress={handleAddComment}>
+        {!loadingComment ? <Feather name={'send'} style={styles.iconSend} size={widthPercentageToDP(5)} /> : <ActivityIndicator size={'small'} color={'#000'} />}
       </TouchableOpacity>
     </View>
   };
@@ -65,7 +129,7 @@ export const CommentScreen = ({ item }) => {
   }
 
   return (
-    <Comments listHeaderComp={<View style={styles.container}>
+    <Comments comments={comments} listHeaderComp={<View style={styles.container}>
       <Image source={{ uri: newItem.image }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.textContent} lineBreakMode="tail">
