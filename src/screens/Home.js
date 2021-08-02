@@ -53,12 +53,6 @@ export const HomeScreen = props => {
         topBar: {
           title: {
             text: item.title,
-            style: {
-              paddingHorizontal: 8,
-              marginHorizontal: 8,
-            },
-            paddingHorizontal: 8,
-            marginHorizontal: 8,
           },
         }
       },
