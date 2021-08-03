@@ -1227,7 +1227,7 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.1.0.tgz#e42b1bef12d2415411519fd528e64b593b1363dc"
   integrity sha512-W/J0fNYVO01tioHjvYWQ9m6RgndVtbElzYozBq1ZPrHO/iCzlqoySHl4gO/fpCl9QEFjvJfjPgtPMTMlsoq5DQ==
 
-"@react-native-firebase/app@^12.4.0":
+"@react-native-firebase/app@12.4.0":
   version "12.4.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-12.4.0.tgz#879ce26be46a8d3e40fbd371eacdef28c608c59e"
   integrity sha512-zBA+LSBXOYBpDnO/n0EW2+cZlHyf8aYSHpyTKOIIt5QXj7DNuB46Hk2cRSXFxOZNOU6fiIuf8i9jFsWdYtOlpQ==
@@ -1236,15 +1236,20 @@
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/database@^12.4.0":
+"@react-native-firebase/database@12.4.0":
   version "12.4.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-12.4.0.tgz#8ae41937004b2a77efdd98c460dfb66c348c249f"
   integrity sha512-PAniLXwVwSjiWovy8kzqczAL4zqfJEZmTACtYqKo68vufYkGH3XG9bXa2HrZlD4uZGYddYIMyshMOLYcCt0rAw==
 
-"@react-native-firebase/firestore@^12.4.0":
+"@react-native-firebase/firestore@12.4.0":
   version "12.4.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-12.4.0.tgz#ab73a55ad832dba1e8718a8ce5ee39ff76126a48"
   integrity sha512-H3cQnZCaXVwg0usRewATpRGlGfUdG+YeGiB/c8ncd40bZzMUfq4vyyLafwYJ7+iedgkxx67fdAwKZ+yNdbS8Mg==
+
+"@react-native-firebase/messaging@12.4.0":
+  version "12.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-12.4.0.tgz#1485855e8da224db9a7278285531120693501d8e"
+  integrity sha512-Uuo+C+DWLZyvBW1Bwz9z9UOL6fiG4y2nToZRknfYI8PZt9NdG9Ulg5vtz5cZerJP7Csadv6QZcgNRB5+vmJFuA==
 
 "@react-native/assets@1.0.0":
   version "1.0.0"
@@ -7457,7 +7462,7 @@ react-native-svg@12.1.1:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"
 
-react-native-uuid@^2.0.1:
+react-native-uuid@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-native-uuid/-/react-native-uuid-2.0.1.tgz#ed4e2dfb1683eddb66967eb5dca140dfe1abddb9"
   integrity sha512-cptnoIbL53GTCrWlb/+jrDC6tvb7ypIyzbXNJcpR3Vab0mkeaaVd5qnB3f0whXYzS+SMoSQLcUUB0gEWqkPC0g==

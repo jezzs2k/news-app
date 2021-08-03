@@ -2,6 +2,7 @@
 
 buildscript {
     ext {
+        firebaseIidVersion = "19.0.1" 
         RNNKotlinVersion = "1.4.31"
         buildToolsVersion = "29.0.3"
         minSdkVersion = 21

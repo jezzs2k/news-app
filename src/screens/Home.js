@@ -1,19 +1,26 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text, Card, List } from '@ui-kitten/components';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
 import { Navigation } from 'react-native-navigation';
+import DeviceInfo from 'react-native-device-info';
+
+//MESSAGE_FIREBASE
+import messaging from '@react-native-firebase/messaging';
+import { firebase } from '../utils';
 
 //COMPONENTS
 import { BottomSheetModal } from '../components';
 
 //CALL_API
 import { getNews } from '../stores/news';
+import axios from 'axios';
 
 let page = 2;
+let deviceToken = null;
 
 export const HomeScreen = props => {
   const [news, setNews] = useState([]);
@@ -88,6 +95,30 @@ export const HomeScreen = props => {
     }
   })
 
+  const handleGetDeviceId = async () => {
+    firebase.messaging().getToken().then(async (token) => {
+      deviceToken = token;
+      await axios.post('https://crawler-news-ncov.herokuapp.com/notifi', {
+        deviceToken: token,
+      })
+    });
+  };
+
+  useEffect(() => {
+    if (!deviceToken) {
+      handleGetDeviceId();
+    }
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log(remoteMessage);
+
+      remoteMessage & Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body, [{ text: 'Ok', onPress: handleRefresh }]);
+    });
+
+    return unsubscribe;
+  }, [])
 
   useEffect(() => {
     crawlData();

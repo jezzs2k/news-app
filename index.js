@@ -8,6 +8,9 @@ import { AppRegistry } from 'react-native';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Feather from 'react-native-vector-icons/Feather';
 
+//MESSAGE_FIREBASE
+import messaging from '@react-native-firebase/messaging';
+
 //APP
 import App from './App';
 import { name as appName } from './app.json';
@@ -15,6 +18,10 @@ import { name as appName } from './app.json';
 //SCREENS
 import { CommentScreen, HomeScreen } from './src/screens';
 import { MyWebComponent } from './src/components';
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});
 
 AppRegistry.registerComponent(appName, () => App);
 
