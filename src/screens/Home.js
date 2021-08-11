@@ -6,7 +6,9 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SplashScreen from 'react-native-splash-screen';
 import { Navigation } from 'react-native-navigation';
-import DeviceInfo from 'react-native-device-info';
+
+//APOLO CLIENT
+import { gql, useQuery, useSubscription, useMutation } from '@apollo/client';
 
 //MESSAGE_FIREBASE
 import messaging from '@react-native-firebase/messaging';
@@ -17,33 +19,95 @@ import { BottomSheetModal } from '../components';
 
 //CALL_API
 import { getNews } from '../stores/news';
-import axios from 'axios';
 
-let page = 2;
-let deviceToken = null;
+let page = 1;
+
+const GetNews = (pageIndex) => gql`
+query{
+  getNews(pageIndex: "${pageIndex}"){
+    content
+    createdAt
+    title
+    date
+    image
+    newId
+    _id
+  }
+}
+`;
+
+const RegisterTokenDevice = gql`
+  mutation RegisterDeviceToken($deviceToken: String!){
+      registerDeviceToken(deviceToken: $deviceToken){
+        message
+      }
+    }`;
+
+const GetCa = gql`
+ query{
+  getCa{
+    tableData{
+      dies
+      province
+      todayCa
+      totalCa
+    }
+    totalCa {
+      vi {beingTreated treatment title die cured}
+      world {beingTreated treatment title die cured}
+    }
+    createdAt
+    _id
+  }
+}`
+
+const SubscribleNews = gql`
+  subscription{
+    newPost {
+    image
+      title
+      date
+      content
+      _id
+      createdAt
+    }
+  }
+`
 
 export const HomeScreen = props => {
   const [news, setNews] = useState([]);
   const [itemSheet, setItemSheet] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingRefresh, setLoadingRefresh] = useState(false);
+
+  //APOLO
+  const { loading, error, data, fetchMore, refetch } = useQuery(GetNews(page));
+  const { loading: loadingCa, error: errorCa, data: dataCa, refetch: refetchCa } = useQuery(GetCa);
+  const [registerDeviceToken, { loading: loadingToken, error: errorToken, data: dataToken }] = useMutation(RegisterTokenDevice);
+
+  // const { data: dataSubs, loading: loadingSubs } = useSubscription(
+  //   SubscribleNews
+  // );
+
+  // console.log('dataSubs', dataSubs);
+  // console.log('loadingSubs', loadingSubs);
+
+  // useEffect(() => {
+  //   if (dataSubs?.newPost) {
+  //     Alert.alert('I real time ne', `${dataSubs.newPost[0]}`)
+  //   }
+  // }, [dataSubs])
 
   const refRBSheet = useRef();
 
   const crawlData = async () => {
-    setLoading(true);
-    const data = await getNews();
-
-    setNews(data);
-    setLoading(false);
+    data && setNews((news => ([...news, ...data?.getNews])));
   };
 
   const handleRefresh = async () => {
-    setLoading(true);
-    const data = await getNews();
-
-    setNews(data);
-    setLoading(false);
+    setLoadingRefresh(true);
+    await refetch();
+    setLoadingRefresh(false);
   };
 
   const handleOpenSheet = (item) => {
@@ -71,14 +135,14 @@ export const HomeScreen = props => {
     if (loadingMore) {
       return;
     };
+
+    page = page + 1
+
     setLoadingMore(true);
-
-    const data = await getNews(page);
-
-    setNews((news) => ([...news, ...data]));
-
+    const { data } = await fetchMore({
+      query: GetNews(page)
+    });
     setLoadingMore(false);
-    page++;
   };
 
   const handleOpenDetail = (item) => Navigation.push(props.componentId, {
@@ -96,18 +160,17 @@ export const HomeScreen = props => {
   })
 
   const handleGetDeviceId = async () => {
-    firebase.messaging().getToken().then(async (token) => {
-      deviceToken = token;
-      await axios.post('https://crawler-news-ncov.herokuapp.com/notifi', {
-        deviceToken: token,
+    firebase.messaging().getToken().then((token) => {
+      registerDeviceToken({
+        variables: {
+          deviceToken: token
+        }
       })
     });
   };
 
   useEffect(() => {
-    if (!deviceToken) {
-      handleGetDeviceId();
-    }
+    handleGetDeviceId();
   }, [])
 
   useEffect(() => {
@@ -122,7 +185,7 @@ export const HomeScreen = props => {
 
   useEffect(() => {
     crawlData();
-  }, [])
+  }, [data])
 
   useEffect(() => {
     SplashScreen.hide();
@@ -190,7 +253,7 @@ export const HomeScreen = props => {
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
-              refreshing={loading}
+              refreshing={!loadingMore && loading || loadingRefresh}
               onRefresh={handleRefresh}
             />
           }

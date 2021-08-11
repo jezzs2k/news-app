@@ -23,7 +23,7 @@ export const CommentScreen = ({ item, ...props }) => {
 
   const commentRef = firestore().collection('comments');
 
-  const newId = newItem?.id;
+  const newId = newItem?.newId;
 
   const crawlData = async () => {
     setLoading(true);
@@ -42,7 +42,7 @@ export const CommentScreen = ({ item, ...props }) => {
       const timestamp = firestore.FieldValue.serverTimestamp();
       const data = {
         text,
-        newId: newItem?.id,
+        newId: newItem?.newId,
         createdAt: timestamp,
         likes: [],
         senderUser: null,
@@ -67,32 +67,6 @@ export const CommentScreen = ({ item, ...props }) => {
     };
     oneTime = false;
   }, []);
-
-  useEffect(() => {
-    let screenEventListener;
-    let unsubscribe;
-
-    if (!screenEventListener) {
-      screenEventListener = Navigation.events().registerComponentDidAppearListener(({ componentId, componentName, passProps }) => {
-        if (componentId === props.componentId) {
-          if (newId) {
-            unsubscribe = commentRef.where('newId', '==', newId).onSnapshot(querySnapshot => {
-              const newsData = [];
-              querySnapshot?.forEach(doc => {
-                newsData.push(doc.data());
-              });
-
-              setComments(newsData);
-            })
-          }
-        }
-      });
-    }
-    return () => {
-      screenEventListener && screenEventListener.remove();
-      unsubscribe?.();
-    }
-  }, [])
 
   useEffect(() => {
     if (newItem) {

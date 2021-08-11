@@ -8,8 +8,9 @@
 
 import React, { useEffect } from 'react';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+import { ApplicationProvide } from '@ui-kitten/components';
 import SplashScreen from 'react-native-splash-screen'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 const App = () => {
   useEffect(() => {

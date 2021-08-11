@@ -3,10 +3,12 @@
  */
 
 //LIBS
+import React from 'react';
 import { Navigation } from 'react-native-navigation';
 import { AppRegistry } from 'react-native';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Feather from 'react-native-vector-icons/Feather';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 //MESSAGE_FIREBASE
 import messaging from '@react-native-firebase/messaging';
@@ -19,14 +21,24 @@ import { name as appName } from './app.json';
 import { CommentScreen, HomeScreen } from './src/screens';
 import { MyWebComponent } from './src/components';
 
+// Initialize Apollo Client
+const client = new ApolloClient({
+  uri: 'https://crawl-new-api.herokuapp.com/',
+  cache: new InMemoryCache()
+});
+
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
 });
 
 AppRegistry.registerComponent(appName, () => App);
 
-Navigation.registerComponent('Home', () => HomeScreen);
-Navigation.registerComponent('Comments', () => CommentScreen);
+Navigation.registerComponent('Home', () => (props) => <ApolloProvider client={client}>
+  <HomeScreen  {...props} />
+</ApolloProvider>);
+Navigation.registerComponent('Comments', () => (props) => {
+  return <ApolloProvider client={client}><CommentScreen {...props} /></ApolloProvider>
+});
 Navigation.registerComponent('WebView', () => MyWebComponent);
 
 Navigation.events().registerAppLaunchedListener(() => {
