@@ -43,24 +43,6 @@ const RegisterTokenDevice = gql`
       }
     }`;
 
-const GetCa = gql`
- query{
-  getCa{
-    tableData{
-      dies
-      province
-      todayCa
-      totalCa
-    }
-    totalCa {
-      vi {beingTreated treatment title die cured}
-      world {beingTreated treatment title die cured}
-    }
-    createdAt
-    _id
-  }
-}`
-
 const SubscribleNews = gql`
   subscription{
     newPost {
@@ -82,7 +64,6 @@ export const HomeScreen = props => {
 
   //APOLO
   const { loading, error, data, fetchMore, refetch } = useQuery(GetNews(page));
-  const { loading: loadingCa, error: errorCa, data: dataCa, refetch: refetchCa } = useQuery(GetCa);
   const [registerDeviceToken, { loading: loadingToken, error: errorToken, data: dataToken }] = useMutation(RegisterTokenDevice);
 
   // const { data: dataSubs, loading: loadingSubs } = useSubscription(
